@@ -19,7 +19,7 @@ class SpidersWebsView : View {
     private var viewWi = 0 //图形宽度
     private var nodeCount = 4  //多边形层数
     private var pathBeans = ArrayList<PathPointBean>()
-    private var angle = 0
+    private var angle = 0.0
     private lateinit var mPaint: Paint //画笔
 
     constructor(context: Context) : super(context) {
@@ -38,8 +38,7 @@ class SpidersWebsView : View {
     fun initView() {
         mPaint = Paint()
         mPaint.isAntiAlias = true
-        mPaint.color = Color.GRAY
-
+        mPaint.style = Paint.Style.STROKE
     }
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
@@ -52,8 +51,8 @@ class SpidersWebsView : View {
         if (canvas != null && pathBeans.size > 0) {
             //将坐标原点移动至屏幕中心
             canvas.translate(viewWi / 2f, viewHe / 2f)
-            drawName(canvas)
             drawSpiderWeb(canvas)
+            drawName(canvas)
             drawInsideWebs(canvas)
         }
         super.onDraw(canvas)
@@ -64,7 +63,8 @@ class SpidersWebsView : View {
      */
     private fun drawSpiderWeb(canvas: Canvas) {
         var path = Path()
-        mPaint.style = Paint.Style.STROKE
+        mPaint.strokeWidth = 2f
+        mPaint.color = Color.GRAY
         for ((i, bean) in pathBeans.withIndex()) {
             path.reset()
             val radius = bean.mMaxValue.toFloat() - i * bean.mMaxValue.toFloat() / nodeCount
@@ -134,7 +134,8 @@ class SpidersWebsView : View {
      * 设置数据
      */
     fun setData(pathBeans: ArrayList<PathPointBean>) {
-        angle = ((Math.PI * 2 / pathBeans.size).toInt())
+        angle = ((Math.PI * 2 / pathBeans.size))
+        Log.i("wj", "angle:" + angle)
         this.pathBeans = pathBeans
         invalidate()
     }

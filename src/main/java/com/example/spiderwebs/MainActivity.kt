@@ -16,6 +16,8 @@ class MainActivity : AppCompatActivity() {
         beans.add(PathPointBean("魔法防御", maxValue, 200))
         beans.add(PathPointBean("物理穿透", maxValue, 150))
         beans.add(PathPointBean("魔法穿透", maxValue, 190))
+        beans.add(PathPointBean("魔法穿透", maxValue, 120))
+        beans.add(PathPointBean("魔法穿透", maxValue, 198))
         spider_view.setData(beans)
     }
 }
