@@ -13,11 +13,14 @@ import android.view.View
  * Created by jin.wen on 2017/12/26.
  */
 class SpidersWebsView : View {
-    var viewHe = 0 //图形高度
-    var viewWi = 0 //图形宽度
-    var nodeCount = 4  //多边形层数
-    var pathBeans = ArrayList<PathBean>()
-    var angle = 0
+
+    private var textSize = 20 //文字大小
+    private var viewHe = 0 //图形高度
+    private var viewWi = 0 //图形宽度
+    private var nodeCount = 4  //多边形层数
+    private var pathBeans = ArrayList<PathPointBean>()
+    private var angle = 0
+    private lateinit var mPaint: Paint //画笔
 
     constructor(context: Context) : super(context) {
         initView()
@@ -31,17 +34,12 @@ class SpidersWebsView : View {
         initView()
     }
 
-    lateinit var mPaint: Paint
-    lateinit var mNetPaint: Paint
 
     fun initView() {
         mPaint = Paint()
         mPaint.isAntiAlias = true
         mPaint.color = Color.GRAY
 
-        mNetPaint = Paint()
-        mNetPaint.isAntiAlias = true
-        mNetPaint.color = Color.RED
     }
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
@@ -64,12 +62,12 @@ class SpidersWebsView : View {
     /**
      * 画蜘蛛网
      */
-    fun drawSpiderWeb(canvas: Canvas) {
+    private fun drawSpiderWeb(canvas: Canvas) {
         var path = Path()
         mPaint.style = Paint.Style.STROKE
         for ((i, bean) in pathBeans.withIndex()) {
             path.reset()
-            var radius = bean.mMaxValue.toFloat() - i * bean.mMaxValue.toFloat() / nodeCount
+            val radius = bean.mMaxValue.toFloat() - i * bean.mMaxValue.toFloat() / nodeCount
             if (radius == 0f) break
             for (j in 0 until pathBeans.size) {
                 if (j == 0) {
@@ -91,10 +89,11 @@ class SpidersWebsView : View {
     /**
      * 画内部蜘蛛网
      */
-    fun drawInsideWebs(mCanvas: Canvas) {
-        mNetPaint.style = Paint.Style.STROKE
-        mNetPaint.strokeWidth = 5f
-        var path = Path()
+    private fun drawInsideWebs(mCanvas: Canvas) {
+        mPaint.style = Paint.Style.STROKE
+        mPaint.strokeWidth = 5f
+        mPaint.color = Color.RED
+        val path = Path()
         pathBeans
                 .map { it.mCurValue.toFloat() }
                 .forEachIndexed { i, radius ->
@@ -107,14 +106,13 @@ class SpidersWebsView : View {
                     }
                 }
         path.close()
-        mCanvas.drawPath(path, mNetPaint)
+        mCanvas.drawPath(path, mPaint)
     }
 
-    var textSize = 20
     /**
      * 画文字
      */
-    fun drawName(mCanvas: Canvas) {
+    private fun drawName(mCanvas: Canvas) {
         for ((i, bean) in pathBeans.withIndex()) {
             var x = (bean.mMaxValue + 10) * Math.cos(angle * i.toDouble())
             var y = (bean.mMaxValue + 10) * Math.sin(angle * i.toDouble())
@@ -132,7 +130,10 @@ class SpidersWebsView : View {
         }
     }
 
-    fun setData(pathBeans: ArrayList<PathBean>) {
+    /**
+     * 设置数据
+     */
+    fun setData(pathBeans: ArrayList<PathPointBean>) {
         angle = ((Math.PI * 2 / pathBeans.size).toInt())
         this.pathBeans = pathBeans
         invalidate()
