@@ -135,7 +135,6 @@ class SpidersWebsView : View {
      */
     fun setData(pathBeans: ArrayList<PathPointBean>) {
         angle = ((Math.PI * 2 / pathBeans.size))
-        Log.i("wj", "angle:" + angle)
         this.pathBeans = pathBeans
         invalidate()
     }
